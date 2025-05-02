@@ -68,7 +68,7 @@ export default function CustomerList() {
         throw new Error("Error al actualizar el estado")
       }
 
-      setRequests(requests.map((req) => (req.id === id ? { ...req, status } : req)))
+      setRequests(requests.map((req) => (req.id === id ? { ...req, status: status as "pending" | "in-progress" | "completed" | "cancelled" } : req)))
     } catch (err) {
       setError("No se pudo actualizar el estado. Intente nuevamente.")
       console.error(err)
