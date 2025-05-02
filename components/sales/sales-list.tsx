@@ -5,11 +5,14 @@ import { AlertTriangle, FileText } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Sale } from "@/lib/types"
+import SaleDetailModal from "./sale-detail-modal"
 
 export default function SalesList() {
   const [sales, setSales] = useState<Sale[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
 
   const fetchSales = async () => {
     try {
@@ -123,7 +126,15 @@ export default function SalesList() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Button variant="outline" size="sm" className="h-8">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-8"
+                        onClick={() => {
+                          setSelectedSale(sale)
+                          setIsDetailModalOpen(true)
+                        }}
+                      >
                         <FileText className="h-4 w-4 mr-1" />
                         Ver Detalle
                       </Button>
@@ -134,6 +145,15 @@ export default function SalesList() {
             </tbody>
           </table>
         </div>
+
+        <SaleDetailModal
+          sale={selectedSale}
+          isOpen={isDetailModalOpen}
+          onClose={() => {
+            setIsDetailModalOpen(false)
+            setSelectedSale(null)
+          }}
+        />
       </CardContent>
     </Card>
   )
