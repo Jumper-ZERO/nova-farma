@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cbaafb06-7799-4b71-9498-3fb1c1490e3b",
+    "name": "Alcolhol",
+    "category": "higiene",
+    "stock": 1,
+    "minStock": 5,
+    "price": 2.4,
+    "description": "Liquido para desinfeccion"
+  },
+  {
+    "id": "e8b81a36-0d8a-418d-bf12-d5a8bd2220d7",
+    "name": "Gaza",
+    "category": "higiene",
+    "stock": 2,
+    "minStock": 5,
+    "price": 2.5,
+    "description": "para heridas"
+  }
+]

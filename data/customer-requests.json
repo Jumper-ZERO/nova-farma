@@ -1,0 +1,11 @@
+[
+  {
+    "id": "6bb4af6c-abca-4f6a-8bd1-56f8aaa702c8",
+    "customerName": "Jeremi",
+    "contactInfo": "jeremi@example.com",
+    "requestType": "devolucion",
+    "description": "Yo solo yo",
+    "date": "2025-04-29T20:40:03.963Z",
+    "status": "completed"
+  }
+]
