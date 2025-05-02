@@ -74,6 +74,9 @@ export default function CustomerForm() {
         description: "",
       })
 
+      // Dispatch custom event to update the list
+      window.dispatchEvent(new Event('request-updated'))
+
       setSuccess("Solicitud registrada correctamente")
 
       // Refresh the page to show the new request

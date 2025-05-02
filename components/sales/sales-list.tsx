@@ -11,24 +11,36 @@ export default function SalesList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        const response = await fetch("/api/sales")
-        if (!response.ok) {
-          throw new Error("Error al cargar las ventas")
-        }
-        const data = await response.json()
-        setSales(data)
-      } catch (err) {
-        setError("No se pudieron cargar las ventas. Intente nuevamente.")
-        console.error(err)
-      } finally {
-        setLoading(false)
+  const fetchSales = async () => {
+    try {
+      const response = await fetch("/api/sales")
+      if (!response.ok) {
+        throw new Error("Error al cargar las ventas")
       }
+      const data = await response.json()
+      setSales(data)
+    } catch (err) {
+      setError("No se pudieron cargar las ventas. Intente nuevamente.")
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchSales()
+  }, [])
+
+  // Add event listener for custom event
+  useEffect(() => {
+    const handleSaleUpdate = () => {
+      fetchSales()
     }
 
-    fetchSales()
+    window.addEventListener('sale-updated', handleSaleUpdate)
+    return () => {
+      window.removeEventListener('sale-updated', handleSaleUpdate)
+    }
   }, [])
 
   const formatDate = (dateString: string) => {

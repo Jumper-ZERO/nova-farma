@@ -23,6 +23,7 @@ export default function InventoryForm() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -75,8 +76,11 @@ export default function InventoryForm() {
         description: "",
       })
 
-      // Refresh the page to show the new product
-      router.refresh()
+      // Dispatch custom event to update the list
+      window.dispatchEvent(new Event('product-updated'))
+
+      // Show success message
+      setSuccess("Producto guardado correctamente")
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)

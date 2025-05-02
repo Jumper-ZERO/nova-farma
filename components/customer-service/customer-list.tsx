@@ -11,24 +11,36 @@ export default function CustomerList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await fetch("/api/customer-requests")
-        if (!response.ok) {
-          throw new Error("Error al cargar las solicitudes")
-        }
-        const data = await response.json()
-        setRequests(data)
-      } catch (err) {
-        setError("No se pudieron cargar las solicitudes. Intente nuevamente.")
-        console.error(err)
-      } finally {
-        setLoading(false)
+  const fetchRequests = async () => {
+    try {
+      const response = await fetch("/api/customer-requests")
+      if (!response.ok) {
+        throw new Error("Error al cargar las solicitudes")
       }
+      const data = await response.json()
+      setRequests(data)
+    } catch (err) {
+      setError("No se pudieron cargar las solicitudes. Intente nuevamente.")
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchRequests()
+  }, [])
+
+  // Add event listener for custom event
+  useEffect(() => {
+    const handleRequestUpdate = () => {
+      fetchRequests()
     }
 
-    fetchRequests()
+    window.addEventListener('request-updated', handleRequestUpdate)
+    return () => {
+      window.removeEventListener('request-updated', handleRequestUpdate)
+    }
   }, [])
 
   const formatDate = (dateString: string) => {

@@ -1,34 +1,12 @@
 import { NextResponse } from "next/server"
-import fs from "fs"
-import path from "path"
+import { getProducts, saveProducts } from "@/lib/data"
 import type { Product } from "@/lib/types"
 
-const dataFilePath = path.join(process.cwd(), "data", "products.json")
-
-// Get all products
-const getProducts = (): Product[] => {
-  if (!fs.existsSync(dataFilePath)) {
-    return []
-  }
-
-  const fileContent = fs.readFileSync(dataFilePath, "utf-8")
-  return JSON.parse(fileContent)
-}
-
-// Save products to file
-const saveProducts = (products: Product[]) => {
-  const dataDir = path.join(process.cwd(), "data")
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true })
-  }
-  fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2))
-}
-
-// GET handler for a specific product
+// GET handler
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const products = getProducts()
-    const product = products.find((p) => p.id === params.id)
+    const product = products.find((p: Product) => p.id === params.id)
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
@@ -41,27 +19,36 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-// PUT handler to update a product
+// PUT handler
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const data = await request.json()
     const products = getProducts()
-    const index = products.findIndex((p) => p.id === params.id)
+    const index = products.findIndex((p: Product) => p.id === params.id)
 
     if (index === -1) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
 
-    // Update product
-    products[index] = {
-      ...products[index],
-      ...data,
-      id: params.id, // Ensure ID doesn't change
+    // Validate required fields
+    if (!data.name || !data.category || !data.stock || !data.price) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
+    const updatedProduct: Product = {
+      ...products[index],
+      name: data.name,
+      category: data.category,
+      stock: Number.parseInt(data.stock),
+      minStock: Number.parseInt(data.minStock) || 5,
+      price: Number.parseFloat(data.price),
+      description: data.description || "",
+    }
+
+    products[index] = updatedProduct
     saveProducts(products)
 
-    return NextResponse.json(products[index])
+    return NextResponse.json(updatedProduct)
   } catch (error) {
     console.error("Error updating product:", error)
     return NextResponse.json({ error: "Failed to update product" }, { status: 500 })
@@ -72,13 +59,12 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     const products = getProducts()
-    const index = products.findIndex((p) => p.id === params.id)
+    const index = products.findIndex((p: Product) => p.id === params.id)
 
     if (index === -1) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
 
-    // Remove product
     products.splice(index, 1)
     saveProducts(products)
 

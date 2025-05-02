@@ -21,6 +21,7 @@ export default function SalesForm() {
   const [items, setItems] = useState<Array<{ productId: string; quantity: number; price: number; name: string }>>([])
   const [selectedProduct, setSelectedProduct] = useState("")
   const [quantity, setQuantity] = useState(1)
+  const [success, setSuccess] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -113,8 +114,11 @@ export default function SalesForm() {
       setSelectedProduct("")
       setQuantity(1)
 
-      // Refresh the page to show the new sale
-      router.refresh()
+      // Dispatch custom event to update the list
+      window.dispatchEvent(new Event('sale-updated'))
+
+      // Show success message
+      setSuccess("Venta registrada correctamente")
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
