@@ -103,7 +103,7 @@ export default function EditProductModal({ product, isOpen, onClose, onSave }: E
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-white border shadow-lg backdrop-blur-lg backdrop-filter">
         <DialogHeader>
           <DialogTitle>Editar Producto</DialogTitle>
         </DialogHeader>
